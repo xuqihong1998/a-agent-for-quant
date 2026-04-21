@@ -1,0 +1,18 @@
+watchlist:
+  - symbol: "002074"
+    name: "国轩高科"
+    market: "SZ"
+    tags:
+      - "新能源"
+      - "动力电池"
+  - symbol: "002463"
+    name: "沪电股份"
+    market: "SZ"
+    tags:
+      - "PCB"
+      - "AI服务器"
+
+exclude:
+  paused: true
+  st: true
+  new_stock_days: 60

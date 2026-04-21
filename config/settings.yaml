@@ -1,0 +1,29 @@
+data:
+  provider: "akshare"
+  start_date: "2025-01-01"
+  end_date: null
+  cache_dir: "data/cache"
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  adjust: "qfq"
+
+report:
+  output_dir: "reports/daily"
+  format: "markdown"
+  timezone: "Asia/Shanghai"
+
+review:
+  ma_windows:
+    - 5
+    - 10
+    - 20
+  atr_window: 14
+  lookback_days: 120
+
+plan:
+  output_dir: "reports/daily"
+  horizon: "next_trading_day"
+
+runtime:
+  log_level: "INFO"
+  dry_run: true
