@@ -6,6 +6,12 @@ from typing import Any
 import pandas as pd
 import yaml
 
+from tools.market_data import load_symbol_df as _load_symbol_df
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_CONFIG_DIR = PROJECT_ROOT / "config"
+
 
 def load_yaml(path: Path) -> dict[str, Any]:
     if not path.exists():
@@ -15,31 +21,33 @@ def load_yaml(path: Path) -> dict[str, Any]:
         return yaml.safe_load(f) or {}
 
 
-def load_watchlist(config_dir: Path) -> list[dict[str, str]]:
-    cfg = load_yaml(config_dir / "universe.yaml")
+def _normalize_symbol(value: Any) -> str:
+    digits = "".join(ch for ch in str(value).strip() if ch.isdigit())
+    return digits.zfill(6) if digits else str(value).strip().zfill(6)
+
+
+def load_watchlist(config_dir: Path | None = None) -> list[dict[str, Any]]:
+    target_dir = config_dir or DEFAULT_CONFIG_DIR
+    cfg = load_yaml(target_dir / "universe.yaml")
     watchlist = cfg.get("watchlist", [])
     if not isinstance(watchlist, list):
         raise ValueError("watchlist must be a list")
 
-    symbols: list[dict[str, str]] = []
+    normalized: list[dict[str, Any]] = []
     for item in watchlist:
         if isinstance(item, str):
-            symbol = item.zfill(6)
-            symbols.append({"symbol": symbol, "name": symbol})
+            symbol = _normalize_symbol(item)
+            normalized.append({"symbol": symbol, "name": symbol})
             continue
 
         if not isinstance(item, dict) or not item.get("symbol"):
             raise ValueError(f"invalid watchlist item: {item!r}")
 
-        symbol = str(item["symbol"]).zfill(6)
-        name = str(item.get("name") or symbol)
-        symbols.append({"symbol": symbol, "name": name})
+        symbol = _normalize_symbol(item["symbol"])
+        normalized.append({**item, "symbol": symbol, "name": str(item.get("name") or symbol)})
 
-    return symbols
+    return normalized
 
 
 def load_symbol_df(data_dir: Path, symbol: str) -> pd.DataFrame:
-    path = data_dir / f"{str(symbol).zfill(6)}.parquet"
-    if not path.exists():
-        raise FileNotFoundError(f"{symbol} 数据文件不存在: {path}")
-    return pd.read_parquet(path)
+    return _load_symbol_df(symbol, data_dir=data_dir)

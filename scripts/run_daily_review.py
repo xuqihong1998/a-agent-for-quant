@@ -21,13 +21,25 @@ DATA_DIR = BASE_DIR / "data" / "raw"
 REPORT_DIR = BASE_DIR / "reports" / "daily"
 
 
+def _merge_review_targets(
+    watchlist: list[dict[str, Any]],
+    position_map: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    merged: dict[str, dict[str, Any]] = {item["symbol"]: dict(item) for item in watchlist}
+    for symbol, position in position_map.items():
+        if symbol not in merged:
+            merged[symbol] = {"symbol": symbol, "name": position.get("name", symbol)}
+    return sorted(merged.values(), key=lambda item: item["symbol"])
+
+
 def main() -> None:
     watchlist = load_watchlist(CONFIG_DIR)
     positions = load_positions(CONFIG_DIR / "positions.yaml")
     position_map = positions_to_map(positions)
+    review_targets = _merge_review_targets(watchlist, position_map)
     results: list[dict[str, Any]] = []
 
-    for item in watchlist:
+    for item in review_targets:
         symbol = item["symbol"]
         name = item["name"]
 
@@ -35,21 +47,23 @@ def main() -> None:
             print(f"[INFO] 开始处理 {symbol}")
             df = load_symbol_df(DATA_DIR, symbol)
             df = calc_basic_indicators(df)
-            result = summarize_symbol(symbol, df, name=name)
+            summary = summarize_symbol(symbol, df, name=name)
 
             if symbol in position_map:
-                result = enrich_position_info(result, position_map[symbol])
+                summary = enrich_position_info(summary, position_map[symbol])
             else:
-                result["is_position"] = False
+                summary["is_position"] = False
 
-            results.append(result)
+            results.append(summary)
+        except FileNotFoundError:
+            print(f"[WARN] {symbol} 数据缺失")
         except Exception as exc:
             print(f"[WARN] {symbol} 处理失败: {exc}")
 
     today = datetime.now().strftime("%Y-%m-%d")
     output_path = REPORT_DIR / f"{today}.md"
     render_daily_report(results, output_path)
-    print(f"[DONE] 报告生成完成: {output_path}")
+    print(f"[DONE] 报告已生成: {output_path}")
 
 
 if __name__ == "__main__":

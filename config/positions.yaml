@@ -2,7 +2,25 @@ positions:
   - symbol: "002074"
     name: "国轩高科"
     market: "SZ"
-    cost: 39.403
+    cost: 38.109
+    shares: 1000
+    opened_at: null
+    strategy: "manual_watch"
+    notes: "首版默认持仓，用于跑通盘后复盘与风控检查。"
+
+  - symbol: "002463"
+    name: "沪电股份"
+    market: "SZ"
+    cost: 98.829
+    shares: 2000
+    opened_at: null
+    strategy: "manual_watch"
+    notes: "首版默认持仓，用于跑通盘后复盘与风控检查。"
+
+  - symbol: "002281"
+    name: "光迅科技"
+    market: "SZ"
+    cost: 120.059
     shares: 1000
     opened_at: null
     strategy: "manual_watch"

@@ -6,6 +6,10 @@ data:
   raw_dir: "data/raw"
   processed_dir: "data/processed"
   adjust: "qfq"
+  use_system_proxy: false
+  retry_count: 3
+  retry_delay_seconds: 1.5
+  request_timeout_seconds: 15
 
 report:
   output_dir: "reports/daily"

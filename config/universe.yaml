@@ -11,6 +11,11 @@ watchlist:
     tags:
       - "PCB"
       - "AI服务器"
+  - symbol: "002281"
+    name: "光迅科技"
+    market: "SZ"
+    tags:
+      - "PCB"
 
 exclude:
   paused: true
