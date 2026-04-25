@@ -16,6 +16,21 @@ watchlist:
     market: "SZ"
     tags:
       - "PCB"
+  - symbol: "002008"
+    name: "大族激光"
+    market: "SZ"
+    tags:
+      - "PCB"
+  - symbol: "601016"
+    name: "节能风电"
+    market: "SZ"
+    tags:
+      - "电力"
+  - symbol: "603198"
+    name: "迎驾贡酒"
+    market: "SZ"
+    tags:
+      - "电力"
 
 exclude:
   paused: true

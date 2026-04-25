@@ -31,3 +31,13 @@ plan:
 runtime:
   log_level: "INFO"
   dry_run: true
+
+llm:
+  provider: "openai"
+  api_key: "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"
+  base_url: "https://openrouter.ai/api/v1"
+  model: "tencent/hy3-preview:free"
+  disable_tracing: true
+  allow_rule_fallback: true
+  prefer_text_json: true
+  human_review_enabled: false
